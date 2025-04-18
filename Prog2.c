@@ -7,8 +7,6 @@ char check_value[28];
 char gen_poly[10];
 int data_length,i,j;
 
-
-
 void XOR(){
     for(j = 1;j < N; j++)
       check_value[j] = (( check_value[j] == gen_poly[j])?'0':'1');
