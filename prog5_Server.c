@@ -10,7 +10,6 @@
 
 int main() {
     int sock;
-    int simulate_loss = 1; 
     struct sockaddr_in server_addr;
     char buffer[1024];
     int base = 0, next_frame = 0, ack;
@@ -29,15 +28,7 @@ int main() {
     
     while (base < FRAME_COUNT) {
         // Send frames within window size
-        // Flag to simulate loss of frame 1
         while (next_frame < base + WINDOW_SIZE && next_frame < FRAME_COUNT) {
-            if (next_frame == 1 && simulate_loss) {
-                printf("Simulating loss of Frame 1\n");
-                next_frame++; // Skip sending frame 1
-                simulate_loss = 0;
-                continue;
-            }
-            
             sprintf(buffer, "Frame %d", next_frame);
             send(sock, buffer, strlen(buffer), 0);
             printf("Sent: %s\n", buffer);
