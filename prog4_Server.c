@@ -9,7 +9,7 @@ int main()
     char buffer[1024], fname[50];
     struct sockaddr_in addr;
 
-    welcome = socket(PF_INET, SOCK_STREAM, 0);
+    welcome = socket(AF_INET, SOCK_STREAM, 0);
 
     addr.sin_family = AF_INET;
     addr.sin_port = htons(7891);
