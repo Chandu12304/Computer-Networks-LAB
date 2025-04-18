@@ -10,7 +10,7 @@ int main()
     struct sockaddr_in addr;
 
     /*  socket creates an endpoint for communication and returns a file descriptor */
-    soc = socket(PF_INET, SOCK_STREAM, 0);
+    soc = socket(AF_INET, SOCK_STREAM, 0);
 
     /*
      * sockaddr_in is used for ip manipulation
