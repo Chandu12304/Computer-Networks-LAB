@@ -34,7 +34,7 @@ int main() {
     close(r);
 
     /* 5) display the file contents */
-    write(STDOUT_FILENO, buffer, n);
+    printf("%.*s", n, buffer);
 
     return 0;
 }
