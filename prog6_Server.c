@@ -1,33 +1,34 @@
-/* ----------- server.c ----------- */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
+#include <netdb.h>
 
 #define FIFO1 "fifo1"
 #define FIFO2 "fifo2"
 
-int main() {
-    char filename[256], buffer[4096];
-
-    /* 1) ensure the pipes exist */
-    mkfifo(FIFO1, 0666);
-    mkfifo(FIFO2, 0666);
-
-    /* 2) read filename from client */
-    int r = open(FIFO1, O_RDONLY);
-    read(r, filename, sizeof(filename));
-    close(r);
-
-    /* 3) open the file and read its contents */
-    int f = open(filename, O_RDONLY);
-    int n = read(f, buffer, sizeof(buffer));
-    close(f);
-
-    /* 4) send contents back to client */
-    int w = open(FIFO2, O_WRONLY);
-    write(w, buffer, n);
-    close(w);
-
-    return 0;
+int main(){
+  mkfifo(FIFO1,0666);
+  mkfifo(FIFO2,0666);
+  
+  char filename[50];
+  char buffer[1024];
+  
+  int fd1=open(FIFO1,O_RDONLY);
+  int n1=read(fd1,filename,sizeof(filename));
+  buffer[n1] = '\0';
+  
+  int fd2=open(filename,O_RDONLY);
+  int n2=read(fd2,buffer,sizeof(buffer));
+  buffer[n2] = '\0'; 
+  
+  int fd3=open(FIFO2,O_WRONLY);
+  write(fd3,buffer,sizeof(buffer));
+  
+  close(fd1);
+  close(fd2);
+  close(fd3);
 }
