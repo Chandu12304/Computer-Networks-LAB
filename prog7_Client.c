@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <fcntl.h>  
 
 #define BUF_SIZE 1024
 
@@ -19,20 +20,20 @@ int main(int argc, char *argv[]) {
     };
     inet_pton(AF_INET, argv[1], &srv.sin_addr);
 
-    FILE *fp = fopen(argv[3], "rb");
-    if (!fp) {
-        perror("fopen");
-        return 1;
-    }
+int fd = open(argv[3], O_RDONLY);
+if (fd < 0) {
+    perror("open");
+    return 1;
+}
 
-    char buf[BUF_SIZE];
-    while (!feof(fp)) {
-        size_t n = fread(buf, 1, BUF_SIZE, fp);
-        if (n > 0)
-            sendto(sock, buf, n, 0, (struct sockaddr*)&srv, sizeof(srv));
-    }
+char buf[BUF_SIZE];
+ssize_t n;
+while ((n = read(fd, buf, BUF_SIZE)) > 0) {
+    sendto(sock, buf, n, 0, (struct sockaddr*)&srv, sizeof(srv));
+}
 
-    fclose(fp);
+close(fd);
+
     close(sock);
     return 0;
 }
