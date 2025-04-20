@@ -1,40 +1,35 @@
-/* ----------- client.c ----------- */
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <netdb.h>
 
 #define FIFO1 "fifo1"
 #define FIFO2 "fifo2"
 
-int main() {
-    char filename[256];
-    char buffer[4096];
+int main(){
+  
+  mkfifo(FIFO1,0666);
+  mkfifo(FIFO2,0666);
 
-    /* 1) ensure the pipes exist */
-    mkfifo(FIFO1, 0666);
-    mkfifo(FIFO2, 0666);
-
-    /* 2) get filename from user */
-    printf("Enter the full file path: ");
-    fgets(filename, sizeof(filename), stdin);
-
-    // Remove trailing newline character if present
-    filename[strcspn(filename, "\n")] = '\0';
-
-    /* 3) send filename to server */
-    int w = open(FIFO1, O_WRONLY);
-    write(w, filename, strlen(filename) + 1);  // include null terminator
-    close(w);
-
-    /* 4) read back file contents */
-    int r = open(FIFO2, O_RDONLY);
-    int n = read(r, buffer, sizeof(buffer));
-    close(r);
-
-    /* 5) display the file contents */
-    printf("%.*s", n, buffer);
-
-    return 0;
+  char filename[50];
+  char buffer[1024];
+  
+  printf("\nEnter the file name\n");
+  fgets(filename,sizeof(filename),stdin);
+  filename[strcspn(filename, "\n")] = '\0';
+  
+  int fd1=open(FIFO1,O_WRONLY);
+  write(fd1,filename,strlen(filename)+1);
+  
+  int fd2=open(FIFO2,O_RDONLY);
+  int n= read(fd2,buffer,sizeof(buffer));
+  buffer[n] = '\0';
+  
+  printf("%s",buffer);
+  
+  return 0;
 }
