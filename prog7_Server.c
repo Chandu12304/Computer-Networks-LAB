@@ -1,32 +1,33 @@
-/* udp_server.c */
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <string.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <netdb.h>
 
-#define BUF_SIZE 1024
+int main(int argc,char *argv[]){
+	if(argc < 2){
+		fprintf(stderr, "Usage: %s <port>\n", argv[0]);
+		exit(EXIT_FAILURE);
+	}
 
-int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s <port>\n", argv[0]);
-        return 1;
-    }
+	int soc = socket(AF_INET, SOCK_DGRAM, 0);
 
-    int sock = socket(AF_INET, SOCK_DGRAM, 0);
-    struct sockaddr_in addr = {
-        .sin_family = AF_INET,
-        .sin_addr.s_addr = INADDR_ANY,
-        .sin_port = htons(atoi(argv[1]))
-    };
-    bind(sock, (struct sockaddr*)&addr, sizeof(addr));
+	struct sockaddr_in addr;
+	addr.sin_family = AF_INET;
+	addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	addr.sin_port = htons(atoi(argv[1]));
+        
+	bind(soc, (struct sockaddr*)&addr, sizeof(addr));
+	printf("\nUDP server is established\nwaiting for the client to send the message....\n");
 
-    char buf[BUF_SIZE];
-    while (1) {
-        ssize_t len = recvfrom(sock, buf, BUF_SIZE, 0, NULL, NULL);
-        if (len <= 0) break;
-        fwrite(buf, 1, len, stdout);
-    }
-
-    close(sock);
-    return 0;
+	char buffer[1024];
+	ssize_t len = recvfrom(soc, buffer, sizeof(buffer), 0, NULL, NULL);
+	buffer[len] = '\0';
+	
+	printf("\nclient sent the bellow message...\n");
+	printf("%s", buffer);
+	return 0;
 }
