@@ -58,8 +58,8 @@ $ns run
 
 
 # awk file :- /cwnd_/ { print $1, $7 }
-# awk -f extract_cwnd.awk file1.tr > cwnd1.dat
-# awk -f extract_cwnd.awk file2.tr > cwnd2.dat
+# awk -f lab4.awk file1.tr > cwnd1.dat
+# awk -f lab4.awk file2.tr > cwnd2.dat
 # # For cwnd1.dat:
 # cat cwnd1.dat
 
