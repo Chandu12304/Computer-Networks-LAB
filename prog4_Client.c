@@ -13,7 +13,6 @@ int main()
     addr.sin_port = htons(7891);
     addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-    
     connect(soc, (struct sockaddr *) &addr, sizeof(addr));
     printf("\nClient is connected to Server");
     printf("\nEnter file name: ");
@@ -21,10 +20,8 @@ int main()
     /*  send the filename to the server */
     send(soc, fname, sizeof(fname), 0);
 
-    printf("\nRecieved response\n");
-    /*  keep printing any data received from the server */
-    n = recv(soc, buffer, sizeof(buffer), 0);
-        printf("%s", buffer);
+    recv(soc, buffer, sizeof(buffer), 0);
+     printf("%s", buffer);
 
     return 0;
 }
