@@ -57,11 +57,18 @@ $ns run
 
 
 
-# awk file :- /cwnd_/ { print $1, $7 }
-# awk -f lab4.awk file1.tr > cwnd1.dat
-# awk -f lab4.awk file2.tr > cwnd2.dat
-# # For cwnd1.dat:
-# cat cwnd1.dat
-
-# # For cwnd2.dat:
-# cat cwnd2.dat
+# BEGIN {
+#     sent=0; recvd=0; dropped=0;
+# }
+# {
+#     if ($1 == "+" && $5 == "tcp") { sent++ }
+#     if ($1 == "r" && $5 == "tcp") { recvd++ }
+#     if ($1 == "d" && $5 == "tcp") { dropped++ }
+# }
+# END {
+#     print "TCP Statistics:";
+#     print "Packets Sent:    " sent;
+#     print "Packets Received: " recvd;
+#     print "Packets Dropped:  " dropped;
+#     printf "Loss Rate:       %.2f%%\n", (dropped/(sent+dropped))*100;
+# }
