@@ -50,6 +50,8 @@ exit 0
 $ns at 0.1 "$cbr0 start"
 $ns at 4 "finish"
 
+$ns run
+
 # BEGIN{
 #   count=0
 # }
@@ -60,4 +62,4 @@ $ns at 4 "finish"
 #   printf("\ntotal number of packet dropped is %d\n",count);
 # }
 # awk -f analyze.awk lab5.tr
-# $ns run
+    
