@@ -73,17 +73,24 @@ $ns at 4 "finish"
 $ns run
 
 
-# BEGIN{
-# tcp=0
-# udp=0
-# }
-# {
-# if($1=="r"&&$3=="2"&&$4=="3"&&$5=="tcp")
-# tcp++;
-# if($1=="r"&&$3=="2"&&$4=="3"&&$5=="cbr")
-# udp++;
-# }
-# END{
-# printf("The total number of packets by tcp is %d\n",tcp);
-# printf("The total number of packets by udp is %d\n",udp);
-# }
+BEGIN {
+    tcp=0; udp=0;
+    print "Time\tSource\tDest\tProtocol\tSize";
+    print "----------------------------------------";
+}
+{
+    # If packet is TCP and matches conditions, print and count
+    if($1=="r" && $3=="2" && $4=="3" && $5=="tcp") {
+        print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6;  # Print details
+        tcp++;
+    }
+    # If packet is UDP (CBR) and matches conditions, print and count
+    if($1=="r" && $3=="2" && $4=="3" && $5=="cbr") {
+        print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6;  # Print details
+        udp++;
+    }
+}
+END {
+    printf("\nTotal TCP packets: %d\n", tcp);
+    printf("Total UDP (CBR) packets: %d\n", udp);
+}
